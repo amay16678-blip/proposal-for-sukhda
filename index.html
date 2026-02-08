@@ -212,6 +212,42 @@ background: #999;
 z-index: 50;
 }
 
+/* Music control button */
+.music-btn {
+position: fixed;
+bottom: 20px;
+right: 20px;
+width: 60px;
+height: 60px;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.95);
+border: none;
+font-size: 28px;
+cursor: pointer;
+box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+z-index: 999;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.3s;
+animation: musicPulse 2s infinite;
+}
+
+@keyframes musicPulse {
+0%, 100% { transform: scale(1); }
+50% { transform: scale(1.1); }
+}
+
+.music-btn:hover {
+transform: scale(1.15);
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.music-btn.playing {
+background: linear-gradient(135deg, #ff9a9e, #fecfef);
+animation: none;
+}
+
 .confetti {
 position: fixed;
 width: 10px;
@@ -270,6 +306,13 @@ button {
 padding: 12px 24px;
 font-size: 15px;
 }
+.music-btn {
+bottom: 15px;
+right: 15px;
+width: 50px;
+height: 50px;
+font-size: 24px;
+}
 }
 </style>
 
@@ -280,8 +323,18 @@ font-size: 15px;
 
 <div class="overlay" id="overlay">
   <div class="tap-button" id="tapButton">Tap to Begin 💕</div>
-  <p>A special message for Sukhda</p>
+  <p>Turn on your sound for the best experience</p>
 </div>
+
+<!-- Music element -->
+
+<audio id="music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Music control button -->
+
+<button class="music-btn" id="musicBtn" style="display: none;">🎵</button>
 
 <div class="card" id="card">
   <div class="photo-box">
@@ -309,6 +362,51 @@ const pages = [
 
 let i = 0;
 let moveCount = 0;
+let musicPlaying = false;
+
+const music = document.getElementById('music');
+const musicBtn = document.getElementById('musicBtn');
+
+// Try to play music
+function playMusic() {
+  music.volume = 0.7; // Set volume to 70%
+  
+  const playPromise = music.play();
+  
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      // Music started successfully
+      musicPlaying = true;
+      musicBtn.classList.add('playing');
+      musicBtn.textContent = '🎵';
+      console.log('Music playing!');
+    }).catch((error) => {
+      // Autoplay was blocked
+      console.log('Autoplay blocked. User needs to click music button.');
+      musicPlaying = false;
+      musicBtn.classList.remove('playing');
+      musicBtn.textContent = '🔇';
+      // Show music button more prominently
+      musicBtn.style.animation = 'musicPulse 1s infinite';
+    });
+  }
+}
+
+// Toggle music
+function toggleMusic() {
+  if (music.paused) {
+    music.play().then(() => {
+      musicPlaying = true;
+      musicBtn.classList.add('playing');
+      musicBtn.textContent = '🎵';
+    });
+  } else {
+    music.pause();
+    musicPlaying = false;
+    musicBtn.classList.remove('playing');
+    musicBtn.textContent = '🔇';
+  }
+}
 
 // Create floating hearts
 function makeHearts() {
@@ -345,9 +443,14 @@ function updateDots() {
 
 // Start the experience
 function start() {
-  console.log('Start clicked!'); // Debug
   const overlay = document.getElementById('overlay');
   overlay.classList.add('hide');
+  
+  // Show music button
+  musicBtn.style.display = 'flex';
+  
+  // Try to play music
+  playMusic();
   
   setTimeout(() => {
     overlay.style.display = 'none';
@@ -380,7 +483,11 @@ function show() {
 
 // Next page
 function next() {
-  console.log('Next clicked!'); // Debug
+  // Try to play music again on interaction
+  if (!musicPlaying && music.paused) {
+    playMusic();
+  }
+  
   if (i < pages.length - 1) {
     i++;
     show();
@@ -438,8 +545,6 @@ function moveNo(e) {
 function yes(e) {
   if (e) e.preventDefault();
   
-  console.log('YES clicked!'); // Debug
-  
   // Create confetti
   for (let j = 0; j < 100; j++) {
     const c = document.createElement('div');
@@ -468,7 +573,7 @@ const overlay = document.getElementById('overlay');
 const tapButton = document.getElementById('tapButton');
 const nextBtn = document.getElementById('nextBtn');
 
-// Overlay start - try all methods
+// Overlay start
 overlay.addEventListener('click', start);
 overlay.addEventListener('touchend', function(e) {
   e.preventDefault();
@@ -488,7 +593,14 @@ nextBtn.addEventListener('touchend', function(e) {
   next();
 });
 
-// Prevent double-tap zoom on iOS
+// Music button
+musicBtn.addEventListener('click', toggleMusic);
+musicBtn.addEventListener('touchend', function(e) {
+  e.preventDefault();
+  toggleMusic();
+});
+
+// Prevent double-tap zoom
 document.addEventListener('touchend', function(e) {
   const now = Date.now();
   if (now - (window.lastTap || 0) < 300) {
@@ -496,10 +608,6 @@ document.addEventListener('touchend', function(e) {
   }
   window.lastTap = now;
 }, false);
-
-// Debug - log when page loads
-console.log('Page loaded successfully!');
-console.log('Click anywhere on the pink screen to begin');
 </script>
 
 </body>
