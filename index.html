@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Sukhda ❤️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Georgia, serif;
+  background: linear-gradient(to bottom,#fff1f5,#ffe4e9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(to bottom,#ffdde6,#ffc1d1);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  cursor:pointer;
+}
+
+.overlay h2{
+  background:#fff;
+  padding:18px 28px;
+  border-radius:30px;
+  color:#c2185b;
+}
+
+.card{
+  text-align:center;
+  max-width:420px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:22px;
+  z-index:2;
+}
+
+img{
+  width:260px;
+  height:320px;
+  object-fit:cover;
+  border-radius:22px;
+  box-shadow:0 15px 30px rgba(0,0,0,.25);
+}
+
+h1{
+  font-size:22px;
+  line-height:1.6;
+  color:#5a1a2b;
+  margin:0;
+}
+
+button{
+  padding:12px 28px;
+  border:none;
+  border-radius:25px;
+  background:#e63961;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#noBtn{
+  position:absolute;
+  background:#999;
+}
+
+.confetti{
+  position:fixed;
+  top:-10px;
+  width:10px;
+  height:10px;
+  animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- TAP TO START -->
+<div class="overlay" onclick="startStory()">
+  <h2>Tap to Begin 💕</h2>
+</div>
+
+<!-- MUSIC -->
+<audio id="music" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- MAIN CARD -->
+<div class="card">
+  <img id="photo" src="img1.jpg">
+  <h1 id="text"></h1>
+  <button onclick="nextPage()">Continue 💗</button>
+</div>
+
+<script>
+const pages = [
+  { img:"img1.jpg", text:"Sukhda, I promise to listen to you, even when words fail you." },
+  { img:"img2.jpg", text:"I promise to support your dreams, even when they scare us both." },
+  { img:"img3.jpg", text:"I promise to choose you, even on the hard days." },
+  { img:"img4.jpg", text:"I promise to protect your heart like it’s my own." },
+  { img:"img5.jpg", text:"I promise to grow with you, not away from you." },
+  { img:"img6.jpg", text:"I promise to laugh with you, especially when life feels heavy." },
+  { img:"img7.jpg", text:"I promise to respect your space and cherish your presence." },
+  { img:"img8.jpg", text:"I promise to love you in ways words may never fully explain." },
+  { img:"img9.jpg", text:"I promise my heart will always feel like home to you." },
+  { img:"img10.jpg", text:"Sukhda, will you be mine forever? 💍❤️" }
+];
+
+let index = 0;
+
+function startStory(){
+  document.querySelector(".overlay").style.display = "none";
+
+  const music = document.getElementById("music");
+  music.volume = 1;
+
+  const playPromise = music.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      console.log("Playback blocked, retrying on interaction");
+      music.play();
+    });
+  }
+
+  showPage();
+}
+
+function showPage(){
+  document.getElementById("photo").src = pages[index].img;
+  document.getElementById("text").innerText = pages[index].text;
+}
+
+function nextPage(){
+  if(index < pages.length - 1){
+    index++;
+    showPage();
+  } else {
+    finalProposal();
+  }
+}
+
+function finalProposal(){
+  document.querySelector(".card").innerHTML = `
+    <h1>Will you be my Valentine, Sukhda? 💖</h1>
+    <button onclick="yes()">YES 💍</button>
+    <button id="noBtn" onclick="moveNo()">NO 🙈</button>
+  `;
+}
+
+function moveNo(){
+  const btn = document.getElementById("noBtn");
+  btn.style.left = Math.random() * 80 + "%";
+  btn.style.top = Math.random() * 80 + "%";
+}
+
+function yes(){
+  for(let i=0;i<80;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},100%,60%)`;
+    c.style.animationDuration=2+Math.random()*3+"s";
+    document.body.appendChild(c);
+  }
+  document.querySelector(".card").innerHTML =
+    "<h1>YAYYYY ❤️💍<br>I love you forever, Sukhda!</h1>";
+}
+</script>
+
+</body>
+</html>
