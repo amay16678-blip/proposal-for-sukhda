@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Sukhda ❤️</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Music -->
+<audio id="music" loop autoplay muted>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Start Overlay -->
+<div class="overlay" onclick="startStory()">Tap to Begin 💕</div>
+
+<!-- Roses -->
+<div class="roses"></div>
+
+<!-- Confetti -->
+<div class="confetti" id="confetti"></div>
+
+<!-- Main Card -->
+<div class="card">
+  <img id="photo" src="img1.jpg">
+  <h1 id="text"></h1>
+
+  <div class="buttons">
+    <button id="yesBtn" onclick="next()">Continue 💖</button>
+    <button id="noBtn">NO 🙈</button>
+  </div>
+</div>
+
+<script>
+const pages = [
+ {img:"img1.jpg", text:"Sukhda, today I don’t just make a promise — I choose you, again and again, every single day."},
+ {img:"img2.jpg", text:"I promise to be your calm when life feels loud, and your strength when things feel heavy."},
+ {img:"img3.jpg", text:"I promise to care for your heart the way it deserves — gently, honestly, and always."},
+ {img:"img4.jpg", text:"I promise to grow with you, learning from you, and becoming better because of you."},
+ {img:"img5.jpg", text:"I promise to stand beside you — not only when life is easy, but especially when it isn’t."},
+ {img:"img6.jpg", text:"I promise to listen to you, even when you don’t know how to put your feelings into words."},
+ {img:"img7.jpg", text:"I promise to protect your smile and do everything I can to keep it alive."},
+ {img:"img8.jpg", text:"I promise to make even the simplest moments feel special, just because they’re with you."},
+ {img:"img9.jpg", text:"Sukhda… every promise I make leads me to this moment."},
+ {img:"img10.jpg", text:"On this Proposal Day, with all my heart… Sukhda, will you be mine forever? 💍❤️", final:true}
+];
+
+let index = 0;
+let typing;
+
+function startStory(){
+  document.querySelector(".overlay").style.display="none";
+  const music = document.getElementById("music");
+  music.muted = false;
+  music.volume = 1;
+  music.play();
+  showPage();
+}
+
+function typeText(text){
+  clearInterval(typing);
+  const el = document.getElementById("text");
+  el.innerHTML = "";
+  let i = 0;
+  typing = setInterval(()=>{
+    if(i < text.length){
+      el.innerHTML += text.charAt(i);
+      i++;
+    } else clearInterval(typing);
+  }, 40);
+}
+
+function showPage(){
+  document.getElementById("photo").src = pages[index].img;
+  typeText(pages[index].text);
+
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+
+  if(pages[index].final){
+    yesBtn.innerText = "YES, FOREVER ♾️";
+    yesBtn.classList.add("heartbeat");
+    yesBtn.onclick = () => {
+      launchConfetti();
+      setTimeout(()=>{
+        alert("You just made me the happiest person ❤️\nI love you endlessly, Sukhda 💍");
+      }, 800);
+    };
+    noBtn.style.display = "inline-block";
+  } else {
+    yesBtn.innerText = "Continue 💖";
+    yesBtn.classList.remove("heartbeat");
+    yesBtn.onclick = next;
+    noBtn.style.display = "none";
+  }
+}
+
+function next(){
+  if(index < pages.length - 1){
+    index++;
+    showPage();
+  }
+}
+
+/* NO button jump 😌 */
+const noBtn = document.getElementById("noBtn");
+noBtn.addEventListener("mouseover", moveNo);
+noBtn.addEventListener("click", moveNo);
+
+function moveNo(){
+  const texts=["Hey 😳","Nope 😌","Try again 😄","Not allowed 🙈","Nice try 💕"];
+  noBtn.innerText = texts[Math.floor(Math.random()*texts.length)];
+  const x = Math.random()*200 - 100;
+  const y = Math.random()*150 - 75;
+  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+/* Confetti 💖 */
+function launchConfetti(){
+  const container = document.getElementById("confetti");
+  container.innerHTML = "";
+  for(let i=0;i<30;i++){
+    const heart = document.createElement("span");
+    heart.innerText = "💖";
+    heart.style.setProperty("--x", `${Math.random()*400-200}px`);
+    heart.style.setProperty("--y", `${Math.random()*400-100}px`);
+    container.appendChild(heart);
+    setTimeout(()=>heart.remove(),3000);
+  }
+}
+</script>
+
+</body>
+</html>
