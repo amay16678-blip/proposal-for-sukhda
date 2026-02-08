@@ -42,7 +42,7 @@ body{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:24px;
+  gap:22px;
   z-index:2;
 }
 
@@ -81,7 +81,6 @@ button{
   top:-10px;
   width:10px;
   height:10px;
-  background:red;
   animation:fall 3s linear infinite;
 }
 
@@ -95,14 +94,17 @@ button{
 
 <body>
 
+<!-- TAP TO START -->
 <div class="overlay" onclick="startStory()">
   <h2>Tap to Begin 💕</h2>
 </div>
 
-<audio id="music" loop autoplay muted>
+<!-- MUSIC -->
+<audio id="music" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
+<!-- MAIN CARD -->
 <div class="card">
   <img id="photo" src="img1.jpg">
   <h1 id="text"></h1>
@@ -113,23 +115,32 @@ button{
 const pages = [
   { img:"img1.jpg", text:"Sukhda, I promise to listen to you, even when words fail you." },
   { img:"img2.jpg", text:"I promise to support your dreams, even when they scare us both." },
-  { img:"img3.jpg", text:"I promise to choose you, even on the days when life feels heavy." },
+  { img:"img3.jpg", text:"I promise to choose you, even on the hard days." },
   { img:"img4.jpg", text:"I promise to protect your heart like it’s my own." },
   { img:"img5.jpg", text:"I promise to grow with you, not away from you." },
-  { img:"img6.jpg", text:"I promise to laugh with you, especially during tough days." },
+  { img:"img6.jpg", text:"I promise to laugh with you, especially when life feels heavy." },
   { img:"img7.jpg", text:"I promise to respect your space and cherish your presence." },
   { img:"img8.jpg", text:"I promise to love you in ways words may never fully explain." },
-  { img:"img9.jpg", text:"I promise that my heart will always feel like home for you." },
+  { img:"img9.jpg", text:"I promise my heart will always feel like home to you." },
   { img:"img10.jpg", text:"Sukhda, will you be mine forever? 💍❤️" }
 ];
 
 let index = 0;
 
 function startStory(){
-  document.querySelector(".overlay").style.display="none";
-  const music=document.getElementById("music");
-  music.muted=false;
-  music.play();
+  document.querySelector(".overlay").style.display = "none";
+
+  const music = document.getElementById("music");
+  music.volume = 1;
+
+  const playPromise = music.play();
+  if (playPromise !== undefined) {
+    playPromise.catch(() => {
+      console.log("Playback blocked, retrying on interaction");
+      music.play();
+    });
+  }
+
   showPage();
 }
 
@@ -139,7 +150,7 @@ function showPage(){
 }
 
 function nextPage(){
-  if(index < pages.length-1){
+  if(index < pages.length - 1){
     index++;
     showPage();
   } else {
@@ -156,13 +167,13 @@ function finalProposal(){
 }
 
 function moveNo(){
-  const btn=document.getElementById("noBtn");
-  btn.style.left=Math.random()*80+"%";
-  btn.style.top=Math.random()*80+"%";
+  const btn = document.getElementById("noBtn");
+  btn.style.left = Math.random() * 80 + "%";
+  btn.style.top = Math.random() * 80 + "%";
 }
 
 function yes(){
-  for(let i=0;i<60;i++){
+  for(let i=0;i<80;i++){
     const c=document.createElement("div");
     c.className="confetti";
     c.style.left=Math.random()*100+"vw";
@@ -170,7 +181,8 @@ function yes(){
     c.style.animationDuration=2+Math.random()*3+"s";
     document.body.appendChild(c);
   }
-  document.querySelector(".card").innerHTML="<h1>YAYYYY ❤️💍<br>I love you forever, Sukhda!</h1>";
+  document.querySelector(".card").innerHTML =
+    "<h1>YAYYYY ❤️💍<br>I love you forever, Sukhda!</h1>";
 }
 </script>
 
