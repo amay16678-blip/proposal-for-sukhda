@@ -3,131 +3,174 @@
 <head>
 <meta charset="UTF-8">
 <title>For Sukhda ❤️</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  margin:0;
+  font-family: Georgia, serif;
+  background: linear-gradient(to bottom,#fff1f5,#ffe4e9);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:linear-gradient(to bottom,#ffdde6,#ffc1d1);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10;
+  cursor:pointer;
+}
+
+.overlay h2{
+  background:#fff;
+  padding:18px 28px;
+  border-radius:30px;
+  color:#c2185b;
+}
+
+.card{
+  text-align:center;
+  max-width:420px;
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:24px;
+  z-index:2;
+}
+
+img{
+  width:260px;
+  height:320px;
+  object-fit:cover;
+  border-radius:22px;
+  box-shadow:0 15px 30px rgba(0,0,0,.25);
+}
+
+h1{
+  font-size:22px;
+  line-height:1.6;
+  color:#5a1a2b;
+  margin:0;
+}
+
+button{
+  padding:12px 28px;
+  border:none;
+  border-radius:25px;
+  background:#e63961;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#noBtn{
+  position:absolute;
+  background:#999;
+}
+
+.confetti{
+  position:fixed;
+  top:-10px;
+  width:10px;
+  height:10px;
+  background:red;
+  animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+  to{
+    transform:translateY(110vh) rotate(360deg);
+  }
+}
+</style>
 </head>
+
 <body>
 
-<!-- Music -->
+<div class="overlay" onclick="startStory()">
+  <h2>Tap to Begin 💕</h2>
+</div>
+
 <audio id="music" loop autoplay muted>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- Start Overlay -->
-<div class="overlay" onclick="startStory()">Tap to Begin 💕</div>
-
-<!-- Roses -->
-<div class="roses"></div>
-
-<!-- Confetti -->
-<div class="confetti" id="confetti"></div>
-
-<!-- Main Card -->
 <div class="card">
   <img id="photo" src="img1.jpg">
   <h1 id="text"></h1>
-
-  <div class="buttons">
-    <button id="yesBtn" onclick="next()">Continue 💖</button>
-    <button id="noBtn">NO 🙈</button>
-  </div>
+  <button onclick="nextPage()">Continue 💗</button>
 </div>
 
 <script>
 const pages = [
- {img:"img1.jpg", text:"Sukhda, today I don’t just make a promise — I choose you, again and again, every single day."},
- {img:"img2.jpg", text:"I promise to be your calm when life feels loud, and your strength when things feel heavy."},
- {img:"img3.jpg", text:"I promise to care for your heart the way it deserves — gently, honestly, and always."},
- {img:"img4.jpg", text:"I promise to grow with you, learning from you, and becoming better because of you."},
- {img:"img5.jpg", text:"I promise to stand beside you — not only when life is easy, but especially when it isn’t."},
- {img:"img6.jpg", text:"I promise to listen to you, even when you don’t know how to put your feelings into words."},
- {img:"img7.jpg", text:"I promise to protect your smile and do everything I can to keep it alive."},
- {img:"img8.jpg", text:"I promise to make even the simplest moments feel special, just because they’re with you."},
- {img:"img9.jpg", text:"Sukhda… every promise I make leads me to this moment."},
- {img:"img10.jpg", text:"On this Proposal Day, with all my heart… Sukhda, will you be mine forever? 💍❤️", final:true}
+  { img:"img1.jpg", text:"Sukhda, I promise to listen to you, even when words fail you." },
+  { img:"img2.jpg", text:"I promise to support your dreams, even when they scare us both." },
+  { img:"img3.jpg", text:"I promise to choose you, even on the days when life feels heavy." },
+  { img:"img4.jpg", text:"I promise to protect your heart like it’s my own." },
+  { img:"img5.jpg", text:"I promise to grow with you, not away from you." },
+  { img:"img6.jpg", text:"I promise to laugh with you, especially during tough days." },
+  { img:"img7.jpg", text:"I promise to respect your space and cherish your presence." },
+  { img:"img8.jpg", text:"I promise to love you in ways words may never fully explain." },
+  { img:"img9.jpg", text:"I promise that my heart will always feel like home for you." },
+  { img:"img10.jpg", text:"Sukhda, will you be mine forever? 💍❤️" }
 ];
 
 let index = 0;
-let typing;
 
 function startStory(){
   document.querySelector(".overlay").style.display="none";
-  const music = document.getElementById("music");
-  music.muted = false;
-  music.volume = 1;
+  const music=document.getElementById("music");
+  music.muted=false;
   music.play();
   showPage();
 }
 
-function typeText(text){
-  clearInterval(typing);
-  const el = document.getElementById("text");
-  el.innerHTML = "";
-  let i = 0;
-  typing = setInterval(()=>{
-    if(i < text.length){
-      el.innerHTML += text.charAt(i);
-      i++;
-    } else clearInterval(typing);
-  }, 40);
-}
-
 function showPage(){
   document.getElementById("photo").src = pages[index].img;
-  typeText(pages[index].text);
-
-  const yesBtn = document.getElementById("yesBtn");
-  const noBtn = document.getElementById("noBtn");
-
-  if(pages[index].final){
-    yesBtn.innerText = "YES, FOREVER ♾️";
-    yesBtn.classList.add("heartbeat");
-    yesBtn.onclick = () => {
-      launchConfetti();
-      setTimeout(()=>{
-        alert("You just made me the happiest person ❤️\nI love you endlessly, Sukhda 💍");
-      }, 800);
-    };
-    noBtn.style.display = "inline-block";
-  } else {
-    yesBtn.innerText = "Continue 💖";
-    yesBtn.classList.remove("heartbeat");
-    yesBtn.onclick = next;
-    noBtn.style.display = "none";
-  }
+  document.getElementById("text").innerText = pages[index].text;
 }
 
-function next(){
-  if(index < pages.length - 1){
+function nextPage(){
+  if(index < pages.length-1){
     index++;
     showPage();
+  } else {
+    finalProposal();
   }
 }
 
-/* NO button jump 😌 */
-const noBtn = document.getElementById("noBtn");
-noBtn.addEventListener("mouseover", moveNo);
-noBtn.addEventListener("click", moveNo);
+function finalProposal(){
+  document.querySelector(".card").innerHTML = `
+    <h1>Will you be my Valentine, Sukhda? 💖</h1>
+    <button onclick="yes()">YES 💍</button>
+    <button id="noBtn" onclick="moveNo()">NO 🙈</button>
+  `;
+}
 
 function moveNo(){
-  const texts=["Hey 😳","Nope 😌","Try again 😄","Not allowed 🙈","Nice try 💕"];
-  noBtn.innerText = texts[Math.floor(Math.random()*texts.length)];
-  const x = Math.random()*200 - 100;
-  const y = Math.random()*150 - 75;
-  noBtn.style.transform = `translate(${x}px, ${y}px)`;
+  const btn=document.getElementById("noBtn");
+  btn.style.left=Math.random()*80+"%";
+  btn.style.top=Math.random()*80+"%";
 }
 
-/* Confetti 💖 */
-function launchConfetti(){
-  const container = document.getElementById("confetti");
-  container.innerHTML = "";
-  for(let i=0;i<30;i++){
-    const heart = document.createElement("span");
-    heart.innerText = "💖";
-    heart.style.setProperty("--x", `${Math.random()*400-200}px`);
-    heart.style.setProperty("--y", `${Math.random()*400-100}px`);
-    container.appendChild(heart);
-    setTimeout(()=>heart.remove(),3000);
+function yes(){
+  for(let i=0;i<60;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=Math.random()*100+"vw";
+    c.style.background=`hsl(${Math.random()*360},100%,60%)`;
+    c.style.animationDuration=2+Math.random()*3+"s";
+    document.body.appendChild(c);
   }
+  document.querySelector(".card").innerHTML="<h1>YAYYYY ❤️💍<br>I love you forever, Sukhda!</h1>";
 }
 </script>
 
